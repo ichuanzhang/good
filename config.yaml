@@ -1,0 +1,90 @@
+# 服务通用配置
+application:
+  # 服务绑定的ip地址
+  host: 0.0.0.0
+  # 服务监听的端口号
+  port: 8080
+  # 服务启动模式：debug,test,release
+  mode: release
+  # 服务名称
+  name: good
+  # API接口读超时时间
+  read_timeout: 60
+  # API接口写超时时间
+  write_timeout: 60
+
+# 中间件: recovery,cors,traceLog,limiter
+middleware: ["recovery", "cors", "traceLog", "limiter"]
+
+# 数据库
+db:
+  type: mysql
+  dsn: root:123456@tcp(127.0.0.1:3306)/good?charset=utf8mb4&parseTime=True&loc=Local
+
+# redis
+redis:
+  dsn: redis://:@127.0.0.1:6379/0
+
+# limiter 限流器
+# 使用令牌桶算法实现，支持单机限流与分布式限流
+limiter:
+  # 限流器名称，分布式限流用于生成相关键名
+  name: good
+  # 模式：0,1
+  # 0 代表单机限流，多节点部署也支持使用此模式
+  # 1 代表分布式限流，基于 redis 实现
+  mode: 0
+  # 速率，固定间隔时间投放令牌的数量
+  rate: 100
+  # 桶大小
+  size: 1000
+  # 投放令牌的间隔时间，单位：毫秒
+  interval: 100
+  # 数据源，分布式限流使用的数据源
+  dsn: redis://:@127.0.0.1:6379/0
+
+# 日志
+log:
+  # 输出到控制台
+  console:
+    # 是否启用：true, false
+    enable: true
+  # 输出到文件
+  file:
+    # 是否启用：true, false
+    enable: false
+    # 文件名
+    filename: logs/app.log
+    # 文件最大大小，超过后会自动切割
+    max_size: 128
+    # 最大保留时间，单位：天
+    max_age: 7
+    # 最大保留个数，超过后自动删除
+    max_backups: 30
+    # 使用本地时间：true, false
+    local_time: true
+    # 开启压缩：true, false
+    compress: true
+  # 输出到 kafka
+  kafka:
+    # 是否启用：true, false
+    enable: false
+    # 地址
+    addr: 10.0.0.11:9092
+    # 主题
+    topic: good-log
+    # 批消息数量，当待发送消息数量小于此值时，会等待一定时间
+    batch_size: 100
+    # 批字节大小
+    batch_bytes: 1048576
+    # 批消息等待时间，单位：ms，当待发送消息数量小于 batch_size 时，等待的最大时间
+    batch_timeout: 20
+    # 写超时时间
+    write_timeout: 1
+    # 是否要求确认应答：0,1,-1
+    # 0 不要求，发送后不管结果，可能会造成数据丢失
+    # 1 要求 leader，如果 leader 宕机，数据没有及时同步给其它副本，也存在丢数据的可能
+    # -1 要求所有 ISR 中节点确认，数据丢失可能性最小，但速度最慢
+    required_acks: 1
+    # 异步写入
+    async: false
