@@ -22,19 +22,19 @@ const (
 
 // 错误
 var (
-	OK                = register(StatusOK, CodeOK, "OK")
-	ErrParam          = register(StatusBadRequest, CodeInvalidParam, "参数错误")
-	ErrForbidden      = register(StatusForbidden, CodeForbidden, "无权访问")
-	ErrNotFound       = register(StatusNotFound, CodeNotFound, "内容不存在")
-	ErrInternalServer = register(StatusInternalServerError, CodeInternalServerError, "服务器内部错误")
-	ErrUnavailable    = register(StatusServiceUnavailable, CodeUnavailable, "服务暂不可用，请稍后重试")
+	OK                = Register(StatusOK, CodeOK, "OK")
+	ErrParam          = Register(StatusBadRequest, CodeInvalidParam, "参数错误")
+	ErrForbidden      = Register(StatusForbidden, CodeForbidden, "无权访问")
+	ErrNotFound       = Register(StatusNotFound, CodeNotFound, "内容不存在")
+	ErrInternalServer = Register(StatusInternalServerError, CodeInternalServerError, "服务器内部错误")
+	ErrUnavailable    = Register(StatusServiceUnavailable, CodeUnavailable, "服务暂不可用，请稍后重试")
 )
 
 // codeMap 全部错误码
 var codeMap = make(map[int]*Error)
 
-// register 注册错误
-func register(status, code int, msg string) *Error {
+// Register 注册错误
+func Register(status, code int, msg string) *Error {
 	err := &Error{
 		status: status,
 		code:   code,

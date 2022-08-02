@@ -3,6 +3,7 @@ package errcode
 import (
 	"fmt"
 	"runtime"
+	"strconv"
 	//"github.com/pkg/errors"
 )
 
@@ -23,7 +24,11 @@ type stack struct {
 
 // Error 实现 interface error
 func (e *Error) Error() string {
-	return fmt.Sprintf("status=%d, code=%d, msg=%s, err=%v, stack=%v", e.status, e.code, e.msg, e.err, e.stack)
+	var s string
+	if e.stack != nil {
+		s = ", stack=" + e.stack.file + " " + e.stack.function + " " + strconv.Itoa(e.stack.line)
+	}
+	return fmt.Sprintf("status=%d, code=%d, msg=%s, err=%v%s", e.status, e.code, e.msg, e.err, s)
 }
 
 // Wrap 包装错误
